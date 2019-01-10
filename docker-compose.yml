@@ -1,0 +1,17 @@
+version: '3.1'
+services:
+  app:
+    container_name: app-universal
+    build: .
+    volumes:
+      - ./app:/usr/web
+      - /usr/web/node_modules/
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      PORT: ${PORT}
+      REACT_APP_URL: ${REACT_APP_URL}:${PORT}
+      REACT_APP_STYLES_URL: ${REACT_APP_STYLES_URL}
+      NODE_ENV: ${NODE_ENV}
+      BABEL_ENV: ${BABEL_ENV}
+    restart: always
