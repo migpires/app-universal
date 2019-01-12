@@ -10,10 +10,14 @@ import App from './src/App'
 
 // app.use('/resources/opentalk-on-demand/*', express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.resolve(__dirname, './build')));
+
+// app.use(express.static('./public'));
+
 app.get('/*', function (req, res) {
   const appl = ReactDOMServer.renderToString(<App />);
 
-  const indexFile = path.resolve('./public/index.html');
+  const indexFile = path.resolve('./build/index.html');
 
   fs.readFile(indexFile, 'utf8', function (err, data) {
 
@@ -23,7 +27,7 @@ app.get('/*', function (req, res) {
     }
 
     return res.send(
-        data.replace('<head>', `<head>bardamerda`)
+        data.replace('<head>', `<head><title>Titulo</title>`)
             .replace('<div id="root"></div>', `<div id="root">zfgfsdgdas${appl}</div>`)
     );
 
@@ -31,4 +35,6 @@ app.get('/*', function (req, res) {
 
 });
 
-app.listen(process.env.PORT);
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running at http://localhost:${ process.env.PORT }`);
+});
