@@ -1,21 +1,28 @@
+import path from 'path'
+import fs from 'fs'
+
 import express from 'express'
-const path = require('path')
-const fs = require('fs')
-const app = express()
 
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
+import {Helmet} from "react-helmet";
 import App from './src/App'
+
+
+const app = express()
 
 // app.use('/resources/opentalk-on-demand/*', express.static(path.join(__dirname, 'public')));
 
-app.use(express.static(path.resolve(__dirname, './build')));
+// app.use(express.static(path.resolve(__dirname, './build')));
 
-// app.use(express.static('./public'));
+// app.use(express.static('./build'));
+
+app.use('/static', express.static('./build/static'));
 
 app.get('/*', function (req, res) {
-  const appl = ReactDOMServer.renderToString(<App />);
+  const app = ReactDOMServer.renderToString(<App />);
+  const helmet = Helmet.renderStatic();
 
   const indexFile = path.resolve('./build/index.html');
 
@@ -27,8 +34,8 @@ app.get('/*', function (req, res) {
     }
 
     return res.send(
-        data.replace('<head>', `<head><title>Titulo</title>`)
-            .replace('<div id="root"></div>', `<div id="root">zfgfsdgdas${appl}</div>`)
+        data.replace('<head>', `<head>${helmet.title.toString()} ${helmet.meta.toString()} ${helmet.link.toString()}`)
+            .replace('<div id="root"></div>', `<div id="root">${app}</div>`)
     );
 
   });
